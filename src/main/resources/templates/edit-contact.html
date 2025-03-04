@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Contact - Google Contacts Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .container {
+            max-width: 800px;
+            margin-top: 30px;
+        }
+        .edit-contact-form {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .form-section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Google Contacts Manager</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contacts">Contacts</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <span class="text-white me-3" th:text="${name}">User</span>
+                    <a href="/logout" class="btn btn-outline-light btn-sm">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Edit Contact</h1>
+            <a href="/contacts" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Contacts
+            </a>
+        </div>
+        
+        <!-- Edit Contact Form -->
+        <div class="edit-contact-form">
+            <form th:action="@{'/contacts/' + ${contact.resourceName.substring(contact.resourceName.lastIndexOf('/') + 1)} + '/update'}" method="post" th:object="${contact}">
+                <input type="hidden" name="resourceName" th:value="${contact.resourceName}">
+                <input type="hidden" name="etag" th:value="${contact.etag}">
+                
+                <div class="form-section">
+                    <h5>Name Information</h5>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="givenName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="givenName" name="names[0].givenName" 
+                                   th:value="${contact.names != null && !contact.names.isEmpty() ? contact.names[0].givenName : ''}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="familyName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="familyName" name="names[0].familyName"
+                                   th:value="${contact.names != null && !contact.names.isEmpty() ? contact.names[0].familyName : ''}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="displayName" class="form-label">Display Name</label>
+                            <input type="text" class="form-control" id="displayName" name="names[0].displayName"
+                                   th:value="${contact.names != null && !contact.names.isEmpty() ? contact.names[0].displayName : ''}">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h5>Email Addresses</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="emailValue" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="emailValue" name="emailAddresses[0].value"
+                                   th:value="${contact.emailAddresses != null && !contact.emailAddresses.isEmpty() ? contact.emailAddresses[0].value : ''}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="emailType" class="form-label">Type</label>
+                            <select class="form-select" id="emailType" name="emailAddresses[0].type">
+                                <option value="home" th:selected="${contact.emailAddresses != null && !contact.emailAddresses.isEmpty() && contact.emailAddresses[0].type == 'home'}">Home</option>
+                                <option value="work" th:selected="${contact.emailAddresses != null && !contact.emailAddresses.isEmpty() && contact.emailAddresses[0].type == 'work'}">Work</option>
+                                <option value="other" th:selected="${contact.emailAddresses != null && !contact.emailAddresses.isEmpty() && contact.emailAddresses[0].type == 'other'}">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h5>Phone Numbers</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="phoneValue" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phoneValue" name="phoneNumbers[0].value"
+                                   th:value="${contact.phoneNumbers != null && !contact.phoneNumbers.isEmpty() ? contact.phoneNumbers[0].value : ''}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phoneType" class="form-label">Type</label>
+                            <select class="form-select" id="phoneType" name="phoneNumbers[0].type">
+                                <option value="mobile" th:selected="${contact.phoneNumbers != null && !contact.phoneNumbers.isEmpty() && contact.phoneNumbers[0].type == 'mobile'}">Mobile</option>
+                                <option value="home" th:selected="${contact.phoneNumbers != null && !contact.phoneNumbers.isEmpty() && contact.phoneNumbers[0].type == 'home'}">Home</option>
+                                <option value="work" th:selected="${contact.phoneNumbers != null && !contact.phoneNumbers.isEmpty() && contact.phoneNumbers[0].type == 'work'}">Work</option>
+                                <option value="other" th:selected="${contact.phoneNumbers != null && !contact.phoneNumbers.isEmpty() && contact.phoneNumbers[0].type == 'other'}">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <a th:href="@{'/contacts/' + ${contact.resourceName} + '/delete'}" class="btn btn-outline-danger"
+                       onclick="return confirm('Are you sure you want to delete this contact?')">
+                        <i class="bi bi-trash"></i> Delete Contact
+                    </a>
+                    <div>
+                        <a href="/contacts" class="btn btn-outline-secondary me-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Save Changes
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
