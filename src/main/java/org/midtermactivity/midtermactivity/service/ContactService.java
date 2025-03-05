@@ -81,6 +81,32 @@ public class ContactService {
             return null;
         }
     }
+
+
+    /**
+     * Validates if a contact has required fields.
+     * @param contact the contact to validate
+     * @throws IllegalArgumentException if required fields are missing
+     */
+    private void validateContact(Contact contact) {
+        if (contact.getNames() == null || contact.getNames().isEmpty()
+                || contact.getNames().get(0).getGivenName() == null
+                || contact.getNames().get(0).getGivenName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+
+        if (contact.getEmailAddresses() == null || contact.getEmailAddresses().isEmpty()
+                || contact.getEmailAddresses().get(0).getValue() == null
+                || contact.getEmailAddresses().get(0).getValue().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+
+        if (contact.getPhoneNumbers() == null || contact.getPhoneNumbers().isEmpty()
+                || contact.getPhoneNumbers().get(0).getValue() == null
+                || contact.getPhoneNumbers().get(0).getValue().trim().isEmpty()) {
+            throw new IllegalArgumentException("Phone number is required");
+        }
+    }
     /**
      * Creates a new contact.
      *
@@ -89,12 +115,16 @@ public class ContactService {
      */
     public Contact createContact(Contact contact) {
         try {
+            validateContact(contact);
             return googlePeopleClient.post()
                     .uri("/people:createContact")
                     .bodyValue(contact)
                     .retrieve()
                     .bodyToMono(Contact.class)
                     .block();
+        } catch (IllegalArgumentException e) {
+            log.error("Validation error: {}", e.getMessage());
+            throw e;
         } catch (Exception e) {
             log.error("Error creating contact", e);
             return null;

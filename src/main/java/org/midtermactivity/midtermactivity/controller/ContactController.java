@@ -55,11 +55,14 @@ public class ContactController {
      */
     @PostMapping
     public ResponseEntity<Contact> createContact(@RequestBody Contact contact) {
-        Contact createdContact = contactService.createContact(contact);
-        if (createdContact == null) {
+        try {
+            Contact createdContact = contactService.createContact(contact);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdContact);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdContact);
     }
 
     /**

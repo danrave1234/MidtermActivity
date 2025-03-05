@@ -91,39 +91,76 @@
                 
                 <div class="form-section">
                     <h5>Email Addresses</h5>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="emailValue" class="form-label">Email Address</label>
-                            <input type="email" class="form-control" id="emailValue" name="emailAddresses[0].value"
-                                   th:value="${contact.emailAddresses != null && !contact.emailAddresses.isEmpty() ? contact.emailAddresses[0].value : ''}">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="emailType" class="form-label">Type</label>
-                            <select class="form-select" id="emailType" name="emailAddresses[0].type">
-                                <option value="home" th:selected="${contact.emailAddresses != null && !contact.emailAddresses.isEmpty() && contact.emailAddresses[0].type == 'home'}">Home</option>
-                                <option value="work" th:selected="${contact.emailAddresses != null && !contact.emailAddresses.isEmpty() && contact.emailAddresses[0].type == 'work'}">Work</option>
-                                <option value="other" th:selected="${contact.emailAddresses != null && !contact.emailAddresses.isEmpty() && contact.emailAddresses[0].type == 'other'}">Other</option>
-                            </select>
+                    <div id="emailAddressesContainer">
+                        <!-- Initial email field -->
+                        <div class="row g-3 email-entry" th:each="email, emailStat : ${contact.emailAddresses}">
+                            <div class="col-md-5">
+                                <label th:for="'emailValue' + ${emailStat.index}" class="form-label" th:if="${emailStat.first}">Email Address</label>
+                                <input type="email" class="form-control" 
+                                       th:id="'emailValue' + ${emailStat.index}"
+                                       th:name="'emailAddresses[' + ${emailStat.index} + '].value'"
+                                       th:value="${email.value}">
+                            </div>
+                            <div class="col-md-5">
+                                <label th:for="'emailType' + ${emailStat.index}" class="form-label" th:if="${emailStat.first}">Type</label>
+                                <select class="form-select" 
+                                        th:id="'emailType' + ${emailStat.index}"
+                                        th:name="'emailAddresses[' + ${emailStat.index} + '].type'">
+                                    <option value="home" th:selected="${email.type == 'home'}">Home</option>
+                                    <option value="work" th:selected="${email.type == 'work'}">Work</option>
+                                    <option value="other" th:selected="${email.type == 'other'}">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="button" class="btn btn-danger mb-3" 
+                                        th:if="${!emailStat.first}"
+                                        onclick="removeEmailField(this)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <button type="button" class="btn btn-success mb-3" 
+                                        th:if="${emailStat.last}"
+                                        onclick="addEmailField()">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="form-section">
                     <h5>Phone Numbers</h5>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="phoneValue" class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" id="phoneValue" name="phoneNumbers[0].value"
-                                   th:value="${contact.phoneNumbers != null && !contact.phoneNumbers.isEmpty() ? contact.phoneNumbers[0].value : ''}">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="phoneType" class="form-label">Type</label>
-                            <select class="form-select" id="phoneType" name="phoneNumbers[0].type">
-                                <option value="mobile" th:selected="${contact.phoneNumbers != null && !contact.phoneNumbers.isEmpty() && contact.phoneNumbers[0].type == 'mobile'}">Mobile</option>
-                                <option value="home" th:selected="${contact.phoneNumbers != null && !contact.phoneNumbers.isEmpty() && contact.phoneNumbers[0].type == 'home'}">Home</option>
-                                <option value="work" th:selected="${contact.phoneNumbers != null && !contact.phoneNumbers.isEmpty() && contact.phoneNumbers[0].type == 'work'}">Work</option>
-                                <option value="other" th:selected="${contact.phoneNumbers != null && !contact.phoneNumbers.isEmpty() && contact.phoneNumbers[0].type == 'other'}">Other</option>
-                            </select>
+                    <div id="phoneNumbersContainer">
+                        <div class="row g-3 phone-entry" th:each="phone, phoneStat : ${contact.phoneNumbers}">
+                            <div class="col-md-5">
+                                <label th:for="'phoneValue' + ${phoneStat.index}" class="form-label" th:if="${phoneStat.first}">Phone Number</label>
+                                <input type="tel" class="form-control" 
+                                       th:id="'phoneValue' + ${phoneStat.index}"
+                                       th:name="'phoneNumbers[' + ${phoneStat.index} + '].value'"
+                                       th:value="${phone.value}">
+                            </div>
+                            <div class="col-md-5">
+                                <label th:for="'phoneType' + ${phoneStat.index}" class="form-label" th:if="${phoneStat.first}">Type</label>
+                                <select class="form-select" 
+                                        th:id="'phoneType' + ${phoneStat.index}"
+                                        th:name="'phoneNumbers[' + ${phoneStat.index} + '].type'">
+                                    <option value="mobile" th:selected="${phone.type == 'mobile'}">Mobile</option>
+                                    <option value="home" th:selected="${phone.type == 'home'}">Home</option>
+                                    <option value="work" th:selected="${phone.type == 'work'}">Work</option>
+                                    <option value="other" th:selected="${phone.type == 'other'}">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="button" class="btn btn-danger mb-3" 
+                                        th:if="${!phoneStat.first}"
+                                        onclick="removePhoneField(this)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <button type="button" class="btn btn-success mb-3" 
+                                        th:if="${phoneStat.last}"
+                                        onclick="addPhoneField()">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -143,6 +180,79 @@
             </form>
         </div>
     </div>
+    
+    <!-- Add JavaScript for dynamic fields -->
+    <script th:inline="javascript">
+        let emailCounter = /*[[${contact.emailAddresses != null ? contact.emailAddresses.size() : 1}]]*/ 1;
+        let phoneCounter = /*[[${contact.phoneNumbers != null ? contact.phoneNumbers.size() : 1}]]*/ 1;
+        
+        function addEmailField() {
+            const container = document.getElementById('emailAddressesContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'row g-3 email-entry mt-2';
+            
+            newRow.innerHTML = `
+                <div class="col-md-5">
+                    <input type="email" class="form-control" id="emailValue${emailCounter}" 
+                           name="emailAddresses[${emailCounter}].value">
+                </div>
+                <div class="col-md-5">
+                    <select class="form-select" id="emailType${emailCounter}" 
+                            name="emailAddresses[${emailCounter}].type">
+                        <option value="home">Home</option>
+                        <option value="work">Work</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger" onclick="removeEmailField(this)">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(newRow);
+            emailCounter++;
+        }
+        
+        function removeEmailField(button) {
+            button.closest('.email-entry').remove();
+        }
+
+        function addPhoneField() {
+            const container = document.getElementById('phoneNumbersContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'row g-3 phone-entry mt-2';
+            
+            newRow.innerHTML = `
+                <div class="col-md-5">
+                    <input type="tel" class="form-control" id="phoneValue${phoneCounter}" 
+                           name="phoneNumbers[${phoneCounter}].value">
+                </div>
+                <div class="col-md-5">
+                    <select class="form-select" id="phoneType${phoneCounter}" 
+                            name="phoneNumbers[${phoneCounter}].type">
+                        <option value="mobile">Mobile</option>
+                        <option value="home">Home</option>
+                        <option value="work">Work</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger" onclick="removePhoneField(this)">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(newRow);
+            phoneCounter++;
+        }
+        
+        function removePhoneField(button) {
+            button.closest('.phone-entry').remove();
+        }
+    </script>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

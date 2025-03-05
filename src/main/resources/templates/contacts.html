@@ -76,7 +76,7 @@
         <!-- Add New Contact Form -->
         <div class="add-contact-form">
             <h3>Add New Contact</h3>
-            <form th:action="@{/contacts/create}" method="post" th:object="${newContact}">
+            <form th:action="@{/contacts}" method="post" th:object="${newContact}">
                 <div class="form-section">
                     <h5>Name Information</h5>
                     <div class="row g-3">
@@ -97,37 +97,51 @@
                 
                 <div class="form-section">
                     <h5>Email Addresses</h5>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="emailValue" class="form-label">Email Address</label>
-                            <input type="email" class="form-control" id="emailValue" name="emailAddresses[0].value">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="emailType" class="form-label">Type</label>
-                            <select class="form-select" id="emailType" name="emailAddresses[0].type">
-                                <option value="home">Home</option>
-                                <option value="work">Work</option>
-                                <option value="other">Other</option>
-                            </select>
+                    <div id="emailAddressesContainer">
+                        <div class="row g-3 email-entry">
+                            <div class="col-md-5">
+                                <label for="emailValue0" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="emailValue0" name="emailAddresses[0].value">
+                            </div>
+                            <div class="col-md-5">
+                                <label for="emailType0" class="form-label">Type</label>
+                                <select class="form-select" id="emailType0" name="emailAddresses[0].type">
+                                    <option value="home">Home</option>
+                                    <option value="work">Work</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="button" class="btn btn-success mb-3" onclick="addEmailField()">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="form-section">
                     <h5>Phone Numbers</h5>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="phoneValue" class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" id="phoneValue" name="phoneNumbers[0].value">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="phoneType" class="form-label">Type</label>
-                            <select class="form-select" id="phoneType" name="phoneNumbers[0].type">
-                                <option value="mobile">Mobile</option>
-                                <option value="home">Home</option>
-                                <option value="work">Work</option>
-                                <option value="other">Other</option>
-                            </select>
+                    <div id="phoneNumbersContainer">
+                        <div class="row g-3 phone-entry">
+                            <div class="col-md-5">
+                                <label for="phoneValue0" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phoneValue0" name="phoneNumbers[0].value">
+                            </div>
+                            <div class="col-md-5">
+                                <label for="phoneType0" class="form-label">Type</label>
+                                <select class="form-select" id="phoneType0" name="phoneNumbers[0].type">
+                                    <option value="mobile">Mobile</option>
+                                    <option value="home">Home</option>
+                                    <option value="work">Work</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="button" class="btn btn-success mb-3" onclick="addPhoneField()">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -140,6 +154,79 @@
             </form>
         </div>
         
+        <!-- Add JavaScript for dynamic fields -->
+        <script>
+            let emailCounter = 1;
+            let phoneCounter = 1;
+            
+            function addEmailField() {
+                const container = document.getElementById('emailAddressesContainer');
+                const newRow = document.createElement('div');
+                newRow.className = 'row g-3 email-entry mt-2';
+                
+                newRow.innerHTML = `
+                    <div class="col-md-5">
+                        <input type="email" class="form-control" id="emailValue${emailCounter}" 
+                               name="emailAddresses[${emailCounter}].value">
+                    </div>
+                    <div class="col-md-5">
+                        <select class="form-select" id="emailType${emailCounter}" 
+                                name="emailAddresses[${emailCounter}].type">
+                            <option value="home">Home</option>
+                            <option value="work">Work</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger" onclick="removeEmailField(this)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(newRow);
+                emailCounter++;
+            }
+            
+            function removeEmailField(button) {
+                button.closest('.email-entry').remove();
+            }
+
+            function addPhoneField() {
+                const container = document.getElementById('phoneNumbersContainer');
+                const newRow = document.createElement('div');
+                newRow.className = 'row g-3 phone-entry mt-2';
+                
+                newRow.innerHTML = `
+                    <div class="col-md-5">
+                        <input type="tel" class="form-control" id="phoneValue${phoneCounter}" 
+                               name="phoneNumbers[${phoneCounter}].value">
+                    </div>
+                    <div class="col-md-5">
+                        <select class="form-select" id="phoneType${phoneCounter}" 
+                                name="phoneNumbers[${phoneCounter}].type">
+                            <option value="mobile">Mobile</option>
+                            <option value="home">Home</option>
+                            <option value="work">Work</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger" onclick="removePhoneField(this)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(newRow);
+                phoneCounter++;
+            }
+            
+            function removePhoneField(button) {
+                button.closest('.phone-entry').remove();
+            }
+        </script>
+        
         <!-- Contacts List -->
         <div class="row" th:if="${not #lists.isEmpty(contacts)}">
             <div class="col-md-4" th:each="contact : ${contacts}">
@@ -148,19 +235,23 @@
                         <h5 class="card-title" th:text="${contact.names != null && !contact.names.isEmpty() ? contact.names[0].displayName : 'Unnamed Contact'}">Contact Name</h5>
                         
                         <div th:if="${contact.emailAddresses != null && !contact.emailAddresses.isEmpty()}" class="mb-2">
-                            <p class="card-text">
-                                <i class="bi bi-envelope"></i> 
-                                <span th:text="${contact.emailAddresses[0].value}">email@example.com</span>
-                                <small class="text-muted" th:text="'(' + ${contact.emailAddresses[0].type} + ')'"></small>
-                            </p>
+                            <div th:each="email : ${contact.emailAddresses}" class="mb-1">
+                                <p class="card-text">
+                                    <i class="bi bi-envelope"></i> 
+                                    <span th:text="${email.value}">email@example.com</span>
+                                    <small class="text-muted" th:text="'(' + ${email.type} + ')'"></small>
+                                </p>
+                            </div>
                         </div>
                         
                         <div th:if="${contact.phoneNumbers != null && !contact.phoneNumbers.isEmpty()}" class="mb-2">
-                            <p class="card-text">
-                                <i class="bi bi-telephone"></i> 
-                                <span th:text="${contact.phoneNumbers[0].value}">+1234567890</span>
-                                <small class="text-muted" th:text="'(' + ${contact.phoneNumbers[0].type} + ')'"></small>
-                            </p>
+                            <div th:each="phone : ${contact.phoneNumbers}" class="mb-1">
+                                <p class="card-text">
+                                    <i class="bi bi-telephone"></i> 
+                                    <span th:text="${phone.value}">+1234567890</span>
+                                    <small class="text-muted" th:text="'(' + ${phone.type} + ')'"></small>
+                                </p>
+                            </div>
                         </div>
                         
                         <div class="d-flex justify-content-end mt-3">
